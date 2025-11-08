@@ -1,98 +1,91 @@
-Harika İbrahim! İşte DistServ projesinin ilk hali (`v0.1`) için doğrudan GitHub’a kopyalanabilir, sade ve profesyonel bir `README.md` dosyası. Proje tanımının hemen altına yapılış tarihi de eklendi ✅
+# 🌐 DistServ – Dağıtık Sunucu Tabanlı İstek Senkronizasyon Sistemi (Java Console)
+
+Bu proje, Java ile geliştirilmiş temel bir dağıtık sunucu sistemidir. İstemciden gelen işlem isteklerini işler, sunucular arası veri senkronizasyonu sağlar. Her sunucu, diğer sunucularla bağlantı kurarak güncel durumu paylaşır. Konsol üzerinden çalışır, GUI içermez.
+
+> 📅 Proje tarihi: Ocak 2024
 
 ---
 
-```markdown
-# DistServ
+## 🧠 Teknik Açıklama
 
-Java tabanlı temel bir dağıtık sunucu sistemi. İstemci mesajlarını işler, sunucular arası senkronizasyon ve durum paylaşımı sağlar.
-
-**Yapılış Tarihi:** Ocak 2024
-
----
-
-## 🧩 Sistem Bileşenleri
-
-- **Client.java**  
-  Kullanıcıdan mesaj gönderir. Mesajlar sırayla Server1, Server2 ve Server3’e iletilir.
-
-- **Server1.java**, **Server2.java**, **Server3.java**  
-  Her biri kendi portunda çalışır. Gelen mesajları işler, `Abone` nesnesini diğer sunuculara göndererek durumu senkronize eder.  
-  Ayrıca `PingThread` ile diğer sunuculara periyodik bağlantı kontrolü yapar.
-
-- **Abone.java**  
-  Tüm taraflar arasında taşınan ortak veri modelidir. Abonelik ve giriş durumu ile son güncelleme zamanını içerir.
+- **Sunucu Yapısı**: Her biri farklı portta çalışan 3 sunucu, gelen işlem isteklerini işler ve `Abone` nesnesini diğer sunuculara iletir.
+- **PingThread**: Sunucular arası bağlantı kontrolü için her sunucu, diğerlerini periyodik olarak ping’ler.
+- **Abone Nesnesi**: Abonelik durumu, giriş/çıkış bilgisi ve son güncelleme zamanını içerir.
+- **İstek Protokolü**:
+  - `ABONOL`, `ABONIPTAL`, `GIRIS`, `CIKIS`
+  - `50 HATA`, `55 TAMM`, `99 HATA`
 
 ---
 
-## 🔧 Teknik Detaylar
+## 🎬 Senaryo Akışı
 
-| Sunucu   | Port | Pinglediği Sunucular         |
-|----------|------|------------------------------|
-| Server1  | 5001 | Server2 (5002), Server3 (5003) |
-| Server2  | 5002 | Server1 (5001), Server3 (5003) |
-| Server3  | 5003 | Server1 (5001), Server2 (5002) |
-
-- Veri iletimi: `ObjectOutputStream` ile `Abone` nesnesi gönderilir  
-- Ping kontrolü: Her 10 saniyede bir diğer sunuculara bağlantı denenir  
-- Hata yönetimi: `System.out.println()` ile konsola yazılır  
-- Zaman kontrolü: `EpochMiliSeconds` ile güncellik karşılaştırması yapılır
+- Client, `ABONOL` isteği gönderir → Server1 işler, diğer sunuculara iletir.  
+- Server2, gelen `Abone` nesnesini kontrol eder → güncel değilse güncellemeyi reddeder.  
+- Server3, `PingThread` ile Server1’e bağlantı kurar → bağlantı başarılıysa log basılır.  
+- Client, `CIKIS` isteği gönderir → tüm sunucular durumu günceller.
 
 ---
 
-## 📦 Mesaj Protokolü
+## ⚙️ Sunucu ve Thread Yapısı
 
-| Mesaj       | Açıklama               |
-|-------------|------------------------|
-| `ABONOL`    | Abone olma isteği      |
-| `ABONIPTAL` | Abonelik iptali        |
-| `GIRIS`     | Giriş bildirimi        |
-| `CIKIS`     | Çıkış bildirimi        |
-| `50 HATA`   | İşlem geçersiz         |
-| `55 TAMM`   | İşlem başarılı         |
-| `99 HATA`   | Hatalı durum bildirimi |
+| Yapı           | Açıklama                                                  |
+|----------------|-----------------------------------------------------------|
+| `PingThread`   | Diğer sunuculara periyodik bağlantı kontrolü yapar        |
+| `Abone`        | Ortak veri modeli, tüm sunucular arasında taşınır         |
+| `ServerX`      | İstekleri işler, `Abone` nesnesini diğer sunuculara iletir |
+| `Client`       | Kullanıcıdan işlem isteği alır, sunuculara sırayla gönderir |
 
 ---
 
-## 📁 Dosya Yapısı
+## 📸 Konsol Çıktısı
+
+> Her sunucu kendi portunda çalışır ve gelen istekleri konsola yazdırır. Ping işlemleri ve hata durumları da konsolda görünür.
+
+---
+
+## 🗂️ Proje Yapısı
 
 ```
-src/
-├── Client.java
-├── Server1.java
-├── Server2.java
-├── Server3.java
-└── Abone.java
+/src
+  └── Client.java             # İstek gönderici
+  └── Server1.java            # Sunucu 1
+  └── Server2.java            # Sunucu 2
+  └── Server3.java            # Sunucu 3
+  └── Abone.java              # Ortak veri modeli
+README.md
+LICENSE
 ```
 
 ---
 
-## 🏁 Başlatmak için
+## 🚀 Çalıştırma
 
 Her sunucuyu ayrı terminalde başlat:
 
 ```bash
-javac Server1.java
-java Server1
+javac src/Server1.java
+java src.Server1
 
-javac Server2.java
-java Server2
+javac src/Server2.java
+java src.Server2
 
-javac Server3.java
-java Server3
+javac src/Server3.java
+java src.Server3
 
-javac Client.java
-java Client
+javac src/Client.java
+java src.Client
 ```
+
+> Not: Java 8+ veya üzeri önerilir. Konsol üzerinden çıktı alınır, GUI bulunmamaktadır.
 
 ---
 
 ## 📌 Versiyonlar
 
-- `v0.1` → Ocak 2024: Temel sunucu yapısı, istemci mesajları, Abone nesnesi, PingThread ile sunucular arası bağlantı kontrolü
+- `v0.1` → Ocak 2024: Temel sunucu yapısı, istemci istekleri, Abone nesnesi, PingThread ile sunucular arası bağlantı kontrolü
 
 ---
 
-## 📬 Katkı ve Gelişim
+## 📄 Lisans
 
-Bu proje, sunucular arası veri senkronizasyonu ve sistem davranışı analizine yönelik olarak geliştirilmektedir. İlerleyen versiyonlarda log mimarisi, katmanlı yapı ve çok istemcili sistem gibi özellikler eklenecektir.
+MIT Lisansı – Dilediğiniz gibi kullanabilir, geliştirebilir ve paylaşabilirsiniz.
