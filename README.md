@@ -1,45 +1,51 @@
-# 🌐 DistServ – Dağıtık Sunucu Tabanlı İstek Senkronizasyon Sistemi (Java Console)
+İşte senin v1 mimarini yansıtan, v0.1 stiline sadık ama v1’in teknik gelişmişliğini net şekilde anlatan yeni README taslağın 👇
 
-Bu proje, Java ile geliştirilmiş temel bir dağıtık sunucu sistemidir. İstemciden gelen işlem isteklerini işler, sunucular arası veri senkronizasyonu sağlar. Her sunucu, diğer sunucularla bağlantı kurarak güncel durumu paylaşır. Konsol üzerinden çalışır, GUI içermez.
+---
 
-> 📅 Proje tarihi: Ocak 2024
+```markdown
+# 🌐 DistServ v1.0 – Dağıtık Sunucu Tabanlı İstek Senkronizasyon Sistemi (Java Console)
+
+Bu sürüm, sistemin mimari evrimini tamamlayarak modülerlik, tip güvenliği, thread senkronizasyonu ve loglama gibi temel yapı taşlarını kazandırır. İstemci istekleri artık daha güvenli, izlenebilir ve test edilebilir şekilde işlenmektedir.
+
+> 📅 Sürüm tarihi: Kasım 2025
 
 ---
 
 ## 🧠 Teknik Açıklama
 
-- **Sunucu Yapısı**: Her biri farklı portta çalışan 3 sunucu, gelen işlem isteklerini işler ve `Abone` nesnesini diğer sunuculara iletir.
-- **PingThread**: Sunucular arası bağlantı kontrolü için her sunucu, diğerlerini periyodik olarak ping’ler.
-- **Abone Nesnesi**: Abonelik durumu, giriş/çıkış bilgisi ve son güncelleme zamanını içerir.
-- **İstek Protokolü**:
-  - `ABONOL`, `ABONIPTAL`, `GIRIS`, `CIKIS`
-  - `50 HATA`, `55 TAMM`, `99 HATA`
+- **Modüler Komut İşleme**: `CommandProcessor` sınıfı ile komutlar ayrı metotlara bölündü, iş mantığı IO’dan ayrıştırıldı.
+- **Enum Kullanımı**: `CommandType` enum ile komutlar tip güvenli hale getirildi, switch-case ile sadeleştirildi.
+- **Thread Senkronizasyonu**: `ReentrantLock` ile `Abone` nesnesi eşzamanlı erişime karşı korundu.
+- **Loglama**: `HealthLogger` ile hata ve bilgi logları ayrıştırıldı, sunucu ID’si ile etiketlendi.
+- **Veri Yayımı**: `ServerHandler.Send(...)` ile güncel `Abone` nesnesi diğer sunuculara iletildi.
 
 ---
 
 ## 🎬 Senaryo Akışı
 
-- Client, `ABONOL` isteği gönderir → Server1 işler, diğer sunuculara iletir.  
-- Server2, gelen `Abone` nesnesini kontrol eder → güncel değilse güncellemeyi reddeder.  
-- Server3, `PingThread` ile Server1’e bağlantı kurar → bağlantı başarılıysa log basılır.  
-- Client, `CIKIS` isteği gönderir → tüm sunucular durumu günceller.
+- Client, `ABONOL` isteği gönderir → Server1 işler, diğer sunuculara iletir.
+- Server2, gelen `Abone` nesnesini kontrol eder → zaman damgası eskiyse güncellemeyi reddeder.
+- Server3, `PingThread` ile Server1’e bağlantı kurar → bağlantı başarılıysa log basılır.
+- Client, `CIKIS` isteği gönderir → tüm sunucular durumu günceller ve loglar.
 
 ---
 
 ## ⚙️ Sunucu ve Thread Yapısı
 
-| Yapı           | Açıklama                                                  |
-|----------------|-----------------------------------------------------------|
-| `PingThread`   | Diğer sunuculara periyodik bağlantı kontrolü yapar        |
-| `Abone`        | Ortak veri modeli, tüm sunucular arasında taşınır         |
-| `ServerX`      | İstekleri işler, `Abone` nesnesini diğer sunuculara iletir |
-| `Client`       | Kullanıcıdan işlem isteği alır, sunuculara sırayla gönderir |
+| Yapı               | Açıklama                                                  |
+|--------------------|-----------------------------------------------------------|
+| `CommandProcessor` | Komutları işler, yanıt üretir (`55 TAMM`, `50 HATA`)      |
+| `ClientHandler`    | Komutları yönlendirir, IO işlemlerini yönetir             |
+| `PingThread`       | Diğer sunuculara periyodik bağlantı kontrolü yapar        |
+| `Abone`            | Ortak veri modeli, tüm sunucular arasında taşınır         |
+| `ServerX`          | İstekleri işler, `Abone` nesnesini diğer sunuculara iletir |
+| `Client`           | Kullanıcıdan işlem isteği alır, sunuculara sırayla gönderir |
 
 ---
 
 ## 📸 Konsol Çıktısı
 
-> Her sunucu kendi portunda çalışır ve gelen istekleri konsola yazdırır. Ping işlemleri ve hata durumları da konsolda görünür.
+> Her sunucu kendi portunda çalışır ve gelen istekleri konsola yazdırır. Ping işlemleri, hata durumları ve loglar konsolda görünür.
 
 ---
 
@@ -52,6 +58,12 @@ Bu proje, Java ile geliştirilmiş temel bir dağıtık sunucu sistemidir. İste
   └── Server2.java            # Sunucu 2
   └── Server3.java            # Sunucu 3
   └── Abone.java              # Ortak veri modeli
+  └── CommandProcessor.java   # Komut işleyici
+  └── ClientHandler.java      # Sunucu tarafı yönlendirici
+  └── PingThread.java         # Sunucular arası bağlantı kontrolü
+  └── HealthLogger.java       # Loglama altyapısı
+  └── CommandType.java        # Enum komut tanımları
+  └── Version.java            # Sürüm bilgisi
 README.md
 LICENSE
 ```
@@ -82,7 +94,8 @@ java src.Client
 
 ## 📌 Versiyonlar
 
-- `v0.1` → Ocak 2024: Temel sunucu yapısı, istemci istekleri, Abone nesnesi, PingThread ile sunucular arası bağlantı kontrolü
+- `v0.1` → Ocak 2024: Temel sunucu yapısı, istemci istekleri, Abone nesnesi, PingThread ile bağlantı kontrolü
+- `v1.0` → Kasım 2025: Modüler mimari, enum geçişi, switch-case, thread senkronizasyonu, loglama, v0.1 hataları düzeltildi
 
 ---
 
