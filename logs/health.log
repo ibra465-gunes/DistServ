@@ -1,0 +1,17 @@
+[2025-11-14 19:33:24][INFO][Server1] Veri akışı erken kesildi. client.Client veri göndermeden bağlantıyı kapattı.
+[2025-11-14 19:33:26][INFO][Server1] Veri akışı erken kesildi. client.Client veri göndermeden bağlantıyı kapattı.
+[2025-11-14 19:33:26][INFO][Server2] Veri akışı erken kesildi. client.Client veri göndermeden bağlantıyı kapattı.
+[2025-11-14 19:33:29][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:29][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:30][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:30][ERROR][Server2] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:34][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:34][ERROR][Server1] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:36][ERROR][Server1] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:36][ERROR][Server2] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:40][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:40][ERROR][Server2] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:44][ERROR][Server1] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:44][ERROR][Server3] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:46][ERROR][Server2] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
+[2025-11-14 19:33:46][ERROR][Server1] Bağlantı hatası: client.Client bağlantısı yok veya bağlantı sıfırlandı.
