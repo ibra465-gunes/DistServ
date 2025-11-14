@@ -1,4 +1,4 @@
-#🌐 DistServ v1.0 – Dağıtık Sunucu Tabanlı İstek Senkronizasyon Sistemi (Java Console)
+##🌐 DistServ v1.0 – Dağıtık Sunucu Tabanlı İstek Senkronizasyon Sistemi (Java Console)
 
 Bu sürüm, sistemin mimari evrimini tamamlayarak modülerlik, tip güvenliği, thread senkronizasyonu ve loglama gibi temel yapı taşlarını kazandırır. İstemci istekleri artık daha güvenli, izlenebilir ve test edilebilir şekilde işlenmektedir.
 
